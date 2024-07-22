@@ -15,7 +15,6 @@ const DataTable = () => {
   const [isChanged, setIsChanged] = useState(false);
   const saveTimeout = useRef(null);
 
-  // Fetch initial data
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:8080/api/employees');
@@ -30,7 +29,6 @@ const DataTable = () => {
     fetchData();
   }, []);
 
-  // Function to save changes
   const saveData = async () => {
     try {
       const updatedData = [...data];
@@ -44,13 +42,12 @@ const DataTable = () => {
     }
   };
 
-  // Function to save new row
   const saveNewRow = async () => {
     try {
       console.log('Saving new row:', newRow);
       await axios.post('http://localhost:8080/api/employees', newRow);
-      setNewRow({ name: '', address: '', city: '', religion: '', age: '' }); // Reset new row
-      fetchData(); // Refresh data after adding new row
+      setNewRow({ name: '', address: '', city: '', religion: '', age: '' });
+      fetchData();
       console.log('New row saved successfully!');
     } catch (error) {
       console.error('Error saving new row:', error);
@@ -64,12 +61,10 @@ const DataTable = () => {
     setIsChanged(true);
     console.log('Data changed:', newData);
 
-    // Clear the existing timeout if there is one
     if (saveTimeout.current) {
       clearTimeout(saveTimeout.current);
     }
 
-    // Set a new timeout to save the data after 5 seconds of inactivity
     saveTimeout.current = setTimeout(() => {
       saveData();
     }, 5000);
@@ -82,12 +77,10 @@ const DataTable = () => {
     });
     console.log('New row changed:', { ...newRow, [columnId]: e.target.value });
 
-    // Clear the existing timeout if there is one
     if (saveTimeout.current) {
       clearTimeout(saveTimeout.current);
     }
 
-    // Set a new timeout to save the new row after 5 seconds of inactivity
     saveTimeout.current = setTimeout(() => {
       saveNewRow();
     }, 5000);
@@ -96,7 +89,7 @@ const DataTable = () => {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:8080/api/employees/${id}`);
-      fetchData(); // Refresh data after delete
+      fetchData();
       console.log('Data deleted successfully!');
     } catch (error) {
       console.error('Error deleting data:', error);
